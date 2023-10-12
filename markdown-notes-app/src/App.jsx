@@ -2,14 +2,14 @@
 import React from "react"
 import Sidebar from "./components/Sidebar"
 import Editor from "./components/Editor"
-import { data } from "./data"
+//import { data } from "./data"
 import Split from "react-split"
 import {nanoid} from "nanoid"
 import './App.css';
 
 export default function App() {    
     const [notes, setNotes] = React.useState(
-      () => JSON.parse(localStorage.getItem("note s")) || [])
+      () => JSON.parse(localStorage.getItem("notes")) || [])
 
     React.useEffect(() => {
       localStorage.setItem("notes", JSON.stringify(notes))
@@ -18,8 +18,6 @@ export default function App() {
     const [currentNoteId, setCurrentNoteId] = React.useState(
         (notes[0] && notes[0].id) || ""
     )
-
-    console.log(notes)
 
     function createNewNote() {
       const newNote = {
@@ -60,17 +58,28 @@ export default function App() {
         currentNote.body = text
 
       }
-      // setNotes(function(oldNotes) {
-      //   return (
-      //     oldNotes.map(function(oldNote) {
-      //       return (
-      //         oldNote.id === currentNoteId 
-      //         ? { ...oldNote, body: text }
-      //         : oldNote
-      //       )
-      //     })
-      //   )
-      // })
+        // setNotes(oldNotes => {
+        //   const newArray = []
+        //   for(let i = 0; i < oldNotes.length; i++) {
+        //       const oldNote = oldNotes[i]
+        //       if(oldNote.id === currentNoteId) {
+        //           newArray.unshift({ ...oldNote, body: text })
+        //       } else {
+        //           newArray.push(oldNote)
+        //       }
+        //   }
+        //   return newArray
+        // })
+    }
+
+    function deleteNote(event, noteId) {
+      event.stopPropagation()
+      setNotes(function(currentNotes) {
+        return currentNotes.filter(function(notes) {
+          return notes.id !== noteId
+        })
+      })
+
     }
 
     function findCurrentNote() {
@@ -94,6 +103,7 @@ export default function App() {
               currentNote={findCurrentNote()}
               setCurrentNoteId={setCurrentNoteId}
               newNote={createNewNote}
+              deleteNote={deleteNote}
             />
             {
               currentNoteId && notes.length > 0 &&
