@@ -9,7 +9,7 @@ import './App.css';
 
 export default function App() {    
     const [notes, setNotes] = React.useState(
-      () => JSON.parse(localStorage.getItem("notes")) || [])
+      () => JSON.parse(localStorage.getItem("note s")) || [])
 
     React.useEffect(() => {
       localStorage.setItem("notes", JSON.stringify(notes))
@@ -38,17 +38,39 @@ export default function App() {
     }
 
     function updateNote(text) {
-      setNotes(function(oldNotes) {
-        return (
-          oldNotes.map(function(oldNote) {
-            return (
-              oldNote.id === currentNoteId 
-              ? { ...oldNote, body: text }
-              : oldNote
-            )
-          })
-        )
+      // Put the most recently-modified note at the top
+      const currentNote = findCurrentNote()
+      const noteIndex = notes.findIndex(function(note) {
+        return note.id === currentNoteId
       })
+
+      if (noteIndex !== -1) {
+        // Remove note from its current position
+        const updateNotes = [
+          ...notes.slice(0, noteIndex),
+          ...notes.slice(noteIndex + 1)
+        ]
+
+        //Add the note to the begining of the array
+        setNotes([
+          currentNote,
+          ...updateNotes
+        ])
+
+        currentNote.body = text
+
+      }
+      // setNotes(function(oldNotes) {
+      //   return (
+      //     oldNotes.map(function(oldNote) {
+      //       return (
+      //         oldNote.id === currentNoteId 
+      //         ? { ...oldNote, body: text }
+      //         : oldNote
+      //       )
+      //     })
+      //   )
+      // })
     }
 
     function findCurrentNote() {
