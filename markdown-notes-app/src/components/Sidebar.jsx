@@ -2,6 +2,9 @@ import React from "react"
 
 export default function Sidebar(props) {
     const noteElements = props.notes.map(function(note, index) {
+        let summary = note.body
+        let [title] = summary.split("\n")
+        console.log(typeof(note.body))
         return (
             <div key={note.id}>
                 <div 
@@ -12,11 +15,13 @@ export default function Sidebar(props) {
                         return props.setCurrentNoteId(note.id)
                     }}
                 >
-                    <h4 className="text-snippet">Note {index + 1}</h4>
+                    <h4 className="text-snippet">{title}</h4>
                 </div>
             </div>
         )
     })
+
+    
 
     return (
         <section className="pane sidebar">
